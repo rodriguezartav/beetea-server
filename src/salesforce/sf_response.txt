@@ -1,0 +1,383 @@
+http://na1.salesforce.com/services/data/
+
+[
+{
+"version" : "20.0",
+"label" : "Winter '11",
+"url" : "/services/data/v20.0"
+},
+{
+"version" : "21.0",
+"label" : "Spring '11",
+"url" : "/services/data/v21.0"
+},
+...
+{
+"version" : "26.0",
+"label" : "Winter '13",
+"url" : "/services/data/v26.0"
+}
+]
+
+
+
+Example
+curl https://na1.salesforce.com/services/data/v26.0/ -H "Authorization: Bearer token"
+{
+"sobjects" : "/services/data/v26.0/sobjects",
+"licensing" : "/services/data/v26.0/licensing",
+"connect" : "/services/data/v26.0/connect",
+"search" : "/services/data/v26.0/search",
+"query" : "/services/data/v26.0/query",
+"tooling" : "/services/data/v26.0/tooling",
+"chatter" : "/services/data/v26.0/chatter",
+"recent" : "/services/data/v26.0/recent"
+}
+
+
+curl https://na1.salesforce.com/services/data/v26.0/sobjects/ -H "Authorization: Bearer
+token"
+{
+"encoding" : "UTF-8",
+"maxBatchSize" : 200,
+"sobjects" : [ {
+"name" : "Account",
+"label" : "Account",
+"keyPrefix" : "001",
+"labelPlural" : "Accounts",
+"custom" : false,
+"layoutable" : true,
+"activateable" : false,
+"urls" : {
+"sobject" : "/services/data/v26.0/sobjects/Account",
+"describe" : "/services/data/v26.0/sobjects/Account/describe",
+"rowTemplate" : "/services/data/v26.0/sobjects/Account/{ID}"
+},
+"searchable" : true,
+"updateable" : true,
+"createable" : true,
+"deprecatedAndHidden" : false,
+"customSetting" : false,
+"deletable" : true,
+"feedEnabled" : true,
+"mergeable" : true,
+"queryable" : true,
+"replicateable" : true,
+"retrieveable" : true,
+"undeletable" : true,
+"triggerable" : true
+},
+...
+]
+}
+
+curl https://na1.salesforce.com/services/data/v20.0/sobjects/Account/ -H "Authorization:
+Bearer token"
+
+{
+"objectDescribe" :
+{
+"name" : "Account",
+"updateable" : true,
+"label" : "Account",
+"keyPrefix" : "001",
+...
+"replicateable" : true,
+"retrieveable" : true,
+"undeletable" : true,
+"triggerable" : true
+},
+"recentItems" :
+[
+{
+"attributes" :
+{
+"type" : "Account",
+"url" : "/services/data/v20.0/sobjects/Account/001D000000INjVeIAL"
+},
+"Id" : "001D000000INjVeIAL",
+"Name" : "asdasdasd"
+},
+...
+]
+}
+
+
+Get Field and Other Metadata for an Object
+https://na1.salesforce.com/services/data/v20.0/Account/describe/ -H "Authorization:
+Bearer token"
+
+{
+"name" : "Account",
+"fields" :
+[
+{
+"length" : 18,
+"name" : "Id",
+"type" : "id",
+"defaultValue" : { "value" : null },
+"updateable" : false,
+"label" : "Account ID",
+...
+},
+...
+],
+"updateable" : true,
+"label" : "Account",
+"keyPrefix" : "001",
+"custom" : false,
+...
+"urls" :
+{
+"uiEditTemplate" : "https://na1.salesforce.com/{ID}/e",
+"sobject" : "/services/data/v20.0/sobjects/Account",
+"uiDetailTemplate" : "https://na1.salesforce.com/{ID}",
+...
+},
+"childRelationships" :
+[
+{
+"field" : "ParentId",
+"deprecatedAndHidden" : false,
+...
+},
+....
+],
+"createable" : true,
+"customSetting" : false,
+}
+
+Create a Record
+curl https://na1.salesforce.com/services/data/v20.0/sobjects/Account/ -H "Authorization:
+Bearer token -H "Content-Type: application/json" -d @newaccount.json"
+
+{
+"Name" : "Express Logistics and Transport"
+}
+
+{
+"id" : "001D000000IqhSLIAZ",
+"errors" : [ ],
+"success" : true
+}
+
+Update a Record
+curl https://na1.salesforce.com/services/data/v20.0/sobjects/Account/001D000000INjVe
+-H "Authorization: Bearer token" -H "Content-Type: application/json" -d @patchaccount.json
+-X PATCH
+
+{
+"BillingCity" : "San Francisco"
+}
+
+Response: NO RESPONSE
+
+
+Delete a Record
+curl https://na1.salesforce.com/services/data/v20.0/sobjects/Account/001D000000INjVe
+-H "Authorization: Bearer token" -X DELETE
+
+RESPONSE: NO RESPONSE
+
+
+Get Field Values from Records
+curl https://na1.salesforce.com/services/data/v20.0/sobjects/Account/001D000000INjVe
+?fields=AccountNumber,BillingPostalCode -H "Authorization: Bearer token"
+
+{
+"AccountNumber" : "CD656092",
+"BillingPostalCode" : "27215",
+}
+
+Retrieve a Record Using an External ID
+curl
+https://na1.salesforce.com/services/data/v20.0/sobjects/Merchandise__c/MerchandiseExtID__c/123
+-H "Authorization: Bearer token"
+
+
+{
+"attributes" : {
+"type" : "Merchandise__c",
+"url" : "/services/data/v20.0/sobjects/Merchandise__c/a00D0000008oWP8IAM"
+},
+"Id" : "a00D0000008oWP8IAM",
+"OwnerId" : "005D0000001KyEIIA0",
+"IsDeleted" : false,
+"Name" : "Example Merchandise",
+"CreatedDate" : "2012-07-12T17:49:01.000+0000",
+"CreatedById" : "005D0000001KyEIIA0",
+"LastModifiedDate" : "2012-07-12T17:49:01.000+0000",
+"LastModifiedById" : "005D0000001KyEIIA0",
+"SystemModstamp" : "2012-07-12T17:49:01.000+0000",
+"Description__c" : "Merch with external ID",
+"Price__c" : 10.0,
+"Total_Inventory__c" : 100.0,
+"Distributor__c" : null,
+"MerchandiseExtID__c" : 123.0
+}
+
+Insert or Update (Upsert) a Record Using an External ID
+curl
+https://na1.salesforce.com/services/data/v20.0/sobjects/Account/customExtIdField__c/11999
+-H "Authorization: Bearer token" -H "Content-Type: application/json" -d @newrecord.json
+-X PATCH
+
+{"Name" : "California Wheat Corporation",
+"Type" : "New Customer"
+}
+
+{
+"id" : "00190000001pPvHAAU",
+"errors" : [ ],
+"success" : true
+}
+
+error:
+{
+"message" : "The requested resource does not exist",
+"errorCode" : "NOT_FOUND"
+}
+
+
+Upserting Existing Records
+curl
+https://na1.salesforce.com/services/data/v20.0/sobjects/Account/customExtIdField__c/11999
+-H "Authorization: Bearer token" -H "Content-Type: application/json" -d @updates.json
+-X PATCH
+
+{
+"BillingCity" : "San Francisco"
+}
+
+reponse: NO RESPONSE 204
+
+error:
+{
+"message" : "The requested resource does not exist",
+"errorCode" : "NOT_FOUND"
+}
+
+Upserting Records and Associating with an External ID
+curl
+https://na1.salesforce.com/services/data/v25.0/sobjects/Line_Item__c/LineItemExtID__c/456
+-H "Authorization: Bearer token" -H "Content-Type: application/json" -d @new.json -X
+PATCH
+
+{
+"Name" : "LineItemCreatedViaExtID",
+"Merchandise__r" :
+{
+"MerchandiseExtID__c" : 123
+}
+}
+
+{
+"id" : "a02D0000006YUHrIAO",
+"errors" : [ ],
+"success" : true
+}
+
+
+Example for updating a record
+curl
+https://na1.salesforce.com/services/data/v25.0/sobjects/Line_Item__c/LineItemExtID__c/456
+-H "Authorization: Bearer token" -H "Content-Type: application/json" -d @updates.json
+-X PATCH
+
+{
+"Merchandise__r" :
+{
+"MerchandiseExtID__c" : 333
+}
+}
+
+NO RESPONSE 204
+
+
+Execute a SOQL Query
+curl https://na1.salesforce.com/services/data/v20.0/query/?q=SELECT+name+from+Account
+-H "Authorization: Bearer token"
+
+
+{
+"done" : true,
+"totalSize" : 14,
+"records" :
+[
+{
+"attributes" :
+{
+"type" : "Account",
+"url" : "/services/data/v20.0/sobjects/Account/001D000000IRFmaIAH"
+},
+"Name" : "Test 1"
+},
+{
+"attributes" :
+{
+"type" : "Account",
+"url" : "/services/data/v20.0/sobjects/Account/001D000000IomazIAB"
+},
+"Name" : "Test 2"
+},
+...
+]
+}
+
+
+Example usage for retrieving the remaining query results
+"nextRecordsUrl" : "/services/data/v20.0/query/01gD0000002HU6KIAW-2000"
+
+
+curl https://na1.salesforce.com/services/data/v20.0/query/01gD0000002HU6KIAW-2000 -H
+"Authorization: Bearer token"
+
+{
+"done" : true,
+"totalSize" : 3214,
+"records" : [...]
+}
+
+
+Search for a String
+curl https://na1.salesforce.com/services/data/v20.0/search/?q=FIND+%7Btest%7D -H
+"Authorization: Bearer token"
+
+[
+{
+"attributes" :
+{
+"type" : "Account",
+"url" : "/services/data/v20.0/sobjects/Account/001D000000IqhSLIAZ"
+},
+"Id" : "001D000000IqhSLIAZ"
+},
+{
+"attributes" :
+{
+"type" : "Account",
+"url" : "/services/data/v20.0/sobjects/Account/001D000000IomazIAB"
+},
+"Id" : "001D000000IomazIAB"
+}
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
