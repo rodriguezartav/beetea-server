@@ -1,6 +1,6 @@
 {
   "name": "beetea-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "beetea is a super lightweight framework to build APIs with stantdard and custom REST and security policies",
   "main": "./lib/beetea.js",
   "scripts": {
