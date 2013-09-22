@@ -132,24 +132,40 @@
         }
       });
     });
-    it("should run auto respond error", function(done) {
-      var defered, originalResponse, proxy;
+    it("should return auto respond error", function(done) {
+      var defered, originalRequest, originalResponse, proxy,
+        _this = this;
       defered = Q.defer();
+      originalRequest = {
+        params: {
+          service: "versions"
+        }
+      };
       originalResponse = {
         status: function(status) {},
         send: function(data) {
-          this.status.should.equal(500);
           return done();
         }
       };
       proxy = new Proxy(this.app, {});
-      proxy.proxyComplete({}, originalResponse, defered.promise);
-      return defered.reject("error");
+      proxy.proxyComplete(originalRequest, originalResponse, defered.promise);
+      return defered.reject({
+        data: {
+          error: "this is the error"
+        },
+        serviceResponse: {
+          statusCode: 500
+        }
+      });
     });
     it("should run proxy complete", function(done) {
-      var defered, options, originalResponse, proxy,
-        _this = this;
+      var defered, options, originalRequest, originalResponse, proxy;
       defered = Q.defer();
+      originalRequest = {
+        params: {
+          service: "versions"
+        }
+      };
       originalResponse = {};
       options = {
         onProxySuccess: function() {
@@ -161,7 +177,7 @@
         proxyAutorespond: false
       };
       proxy = new Proxy(this.app, options);
-      proxy.proxyComplete({}, originalResponse, defered.promise);
+      proxy.proxyComplete(originalRequest, originalResponse, defered.promise);
       return defered.resolve({
         data: {
           name: "test",
@@ -242,20 +258,20 @@
       request.options.method.should.equal("GET");
       return request.options.headers.Authorization.should.equal('OAuth anyToken');
     });
-    it("should build a request with string", function() {
+    it("should build a request with string and data", function() {
       var request;
       request = Proxy.buildRequest({
         path: "/path/to/api",
         method: "POST",
         data: {
-          name: "test"
+          "name": "test"
         }
       }, {
         access_token: "anyToken",
         instance_url: "http://localhost"
       });
       request.options.method.should.equal("POST");
-      return JSON.stringify(request.options.data).should.equal('{"name":"test"}');
+      return request.options.data.should.equal('{"name":"test"}');
     });
     it('should return path and data from serviceFactory', function(done) {
       var create, del, rest, update, upsert;

@@ -111,37 +111,46 @@ describe "Salesforce Proxy", ->
       data: {name: "test",success: true}
       serviceResponse: {statusCode: 200}
 
-  it "should run auto respond error" , (done) ->
+  it "should return auto respond error" , (done) ->
     defered = Q.defer()
 
-    originalResponse=
-      status: (status) ->
-      send: (data) ->
-        @status.should.equal 500
-        done()
+    originalRequest=
+      params:
+        service: "versions"
 
+    originalResponse=
+      status: (status) =>
+      send: (data) ->
+        done()
+        
     proxy = new Proxy(@app, {})
 
-    proxy.proxyComplete({}, originalResponse,defered.promise)
+    proxy.proxyComplete(originalRequest, originalResponse,defered.promise)
 
-    defered.reject "error"
+    defered.reject
+      data: {error: "this is the error"}
+      serviceResponse: {statusCode: 500}
 
   it "should run proxy complete" , (done) ->
     defered = Q.defer()
 
+    originalRequest=
+      params:
+        service: "versions"
+
     originalResponse={}
     
     options = 
-      onProxySuccess: =>
+      onProxySuccess: ->
         done()
-      onProxyError: =>
+      onProxyError: ->
         console.log arguments
 
       proxyAutorespond: false
 
     proxy = new Proxy(@app, options)
 
-    proxy.proxyComplete({}, originalResponse,defered.promise)
+    proxy.proxyComplete(originalRequest, originalResponse,defered.promise)
 
     defered.resolve
      data: {name: "test",success: true}
@@ -203,10 +212,10 @@ describe "Salesforce Proxy", ->
     request.options.method.should.equal "GET"
     request.options.headers.Authorization.should.equal 'OAuth anyToken'
 
-  it "should build a request with string" ,  ->
-    request = Proxy.buildRequest( {path: "/path/to/api", method: "POST" , data: {name: "test"} } , {access_token: "anyToken" , instance_url: "http://localhost"})
+  it "should build a request with string and data" ,  ->
+    request = Proxy.buildRequest( {path: "/path/to/api", method: "POST" , data: {"name": "test"} } , {access_token: "anyToken" , instance_url: "http://localhost"})
     request.options.method.should.equal "POST"
-    JSON.stringify(request.options.data).should.equal '{"name":"test"}'
+    request.options.data.should.equal '{"name":"test"}'
 
  
   it 'should return path and data from serviceFactory', (done) ->
